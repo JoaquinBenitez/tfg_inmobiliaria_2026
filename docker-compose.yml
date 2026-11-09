@@ -1,0 +1,124 @@
+# Entorno completo de prueba local / demostración (TFG):
+#
+#   docker compose up --build
+#
+# levanta MongoDB + Redis + semilla de datos demo + API (puerto 3000) + sitio
+# (puerto 3001). No requiere Cloudinary ni cuentas externas: imágenes en
+# almacenamiento local y sindicación en modo sandbox (Meta dry-run + feeds
+# XML/JSON locales — no publica nada real).
+#
+# Comandos útiles:
+#   docker compose run --rm seed                        # volver a ejecutar la semilla
+#   docker compose run --rm seed npm run seed -- --force  # re-sembrar desde cero
+#   docker compose down -v                              # bajar todo y borrar los datos
+name: inmob-demo
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: inmob-mongo
+    # --quiet: silencia los logs informativos de mongod (p. ej. el "Connection
+    # not authenticating" que emite por cada healthcheck sin credenciales —
+    # es benigno pero llena la consola; errores y warnings se siguen logueando)
+    command: ["--quiet"]
+    # Puerto 27017 SIN publicar a propósito: si el evaluador ya tiene un MongoDB
+    # local corriendo, `docker compose up` fallaría por puerto ocupado. Descomentá
+    # para usar este Mongo desde servidores locales:
+    # ports:
+    #   - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # Corre `npm run seed` una vez (usuarios demo + 10 propiedades en
+  # Reconquista/Avellaneda + un recorrido 360°) y termina.
+  seed:
+    build: ./inmob_back
+    command: npm run seed
+    environment: &api-env
+      MONGODB_URI: mongodb://mongo:27017/inmob
+      PORT: "3000"
+      # Secretos de DEMO — cambiarlos en cualquier otro entorno
+      JWT_SECRET: demo_local_jwt_secret_de_mas_de_32_caracteres
+      IMAGE_STORAGE_TYPE: local
+      # Difusión siempre activa en modo sandbox: Meta dry-run + feeds locales.
+      # Desactivar del todo: SYNDICATION_CHANNELS= (vacío) al levantar.
+      SYNDICATION_CHANNELS: "${SYNDICATION_CHANNELS:-meta-graph,xml-feed,json-feed}"
+      QUEUE_BOARD_TOKEN: "${QUEUE_BOARD_TOKEN:-demo-tfg}"
+      REDIS_URL: redis://redis:6379
+    volumes:
+      - uploads:/app/uploads
+      # seed-assets montado desde el host: cambios de fotos/panorámicas sin
+      # reconstruir la imagen, y `npm run export-tour` escribe directo al repo
+      - ./inmob_back/seed-assets:/app/seed-assets
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build: ./inmob_back
+    environment: *api-env
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./inmob_front
+      args:
+        # URLs tal como las ve el NAVEGADOR (se incrustan en el build de Next.js)
+        NEXT_PUBLIC_API_URL: http://localhost:3000/api
+        NEXT_PUBLIC_SITE_URL: http://localhost:3001
+    environment:
+      # Server-side: el contenedor web alcanza la API por la red interna de Docker
+      API_URL: http://api:3000/api
+      AUTH_SECRET: demo_local_auth_secret_cambiar_en_produccion
+      NEXTAUTH_URL: http://localhost:3001
+      AUTH_TRUST_HOST: "true"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api
+
+  # El optimizador de imágenes de Next.js corre DENTRO del contenedor web y
+  # descarga cada imagen desde la URL guardada en la BD (http://localhost:3000/...).
+  # Este shim comparte el namespace de red de `web` y redirige su localhost:3000
+  # hacia la API — el sitio funciona en Docker sin tocar una línea de código.
+  image-proxy:
+    image: alpine/socat
+    command: TCP-LISTEN:3000,fork,reuseaddr TCP:api:3000
+    network_mode: "service:web"
+    depends_on:
+      - api
+
+  # Redis para la cola de sindicación (fase 3) — modo sandbox por defecto.
+  # Puerto no publicado (como mongo): evita chocar con un Redis local; la API
+  # lo alcanza por red interna. Inspección: docker compose exec redis redis-cli
+  redis:
+    image: redis:7-alpine
+    container_name: inmob-redis
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mongo-data:
+  uploads:
+  redis-data:

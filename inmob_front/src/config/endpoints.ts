@@ -1,0 +1,41 @@
+export const endpoints = {
+    properties: {
+        list: '/properties',
+        all: '/properties/all',
+        featured: '/properties/featured',
+        detail: (id: string) => `/properties/getOne/${id}`,
+        create: '/properties/create',
+        update: (id: string) => `/properties/update/${id}`,
+        delete: (id: string) => `/properties/delete/${id}`,
+        uploadImages: (id: string) => `/properties/${id}/images`,
+        deleteImage: (id: string) => `/properties/${id}/images`,
+        tour: (id: string) => `/properties/${id}/tour`,
+        tourScene: (id: string) => `/properties/${id}/tour/scenes`,
+        tourSceneDelete: (id: string, sceneId: string) => `/properties/${id}/tour/scenes/${sceneId}`,
+        search: (type: 'rent' | 'sale') => `/properties/search?listingType=${type}`,
+        nearby: '/properties/nearby',
+        bounds: '/properties/bounds',
+        filterBedrooms: '/properties/filters/bedrooms',
+        filterLocations: '/properties/filters/locations',
+        filterPropertyTypes: '/properties/filters/property-types',
+    },
+    auth: {
+        login: '/auth/login',
+        me: '/auth/me',
+        profile: '/auth/profile',
+        register: '/auth/register',
+    },
+    settings: {
+        hero: '/settings/hero',
+        deleteHeroImage: '/settings/hero/images',
+    },
+    metrics: {
+        ingest: '/metrics',
+        summary: '/metrics/summary',
+    },
+    syndication: {
+        status: '/admin/syndication/status',
+        retry: '/admin/syndication/retry',
+        board: '/admin/queue-board',
+    },
+} as const;

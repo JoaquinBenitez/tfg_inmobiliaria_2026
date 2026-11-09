@@ -1,0 +1,119 @@
+{
+  "property": 3,
+  "propertyTitle": "Casa grande con quincho en Reconquista - tiene 360°",
+  "exportedAt": "2026-11-09T20:27:31.367Z",
+  "scenes": [
+    {
+      "file": "3-frente.webp",
+      "name": "Frente",
+      "initialView": {
+        "pitch": 0.1,
+        "yaw": -0.6,
+        "fov": 60,
+        "_id": "6af22396ceb4c55588b56e02"
+      },
+      "coverage": {
+        "minYaw": -47.5,
+        "maxYaw": 47.5,
+        "minPitch": -30.074516868653784,
+        "maxPitch": 30.074516868653784,
+        "_id": "6af221f46e3e657eb88e0eff"
+      },
+      "hotspots": [
+        {
+          "to": "Living",
+          "pitch": 5.1,
+          "yaw": -0.8,
+          "label": "Ingreso a living"
+        }
+      ]
+    },
+    {
+      "file": "3-living.webp",
+      "name": "Living",
+      "initialView": {
+        "pitch": 0,
+        "yaw": 40.1,
+        "fov": 70,
+        "_id": "6af22396ceb4c55588b56e05"
+      },
+      "coverage": {
+        "minYaw": -95,
+        "maxYaw": 95,
+        "minPitch": -29.9542236328125,
+        "maxPitch": 29.9542236328125,
+        "_id": "6af21f053d2f2969bae29e1f"
+      },
+      "hotspots": [
+        {
+          "to": "Cocina",
+          "pitch": 2.2,
+          "yaw": -62.9,
+          "label": "Cocina"
+        },
+        {
+          "to": "Frente",
+          "pitch": 7.8,
+          "yaw": 71.4,
+          "label": "Salida a frente"
+        }
+      ]
+    },
+    {
+      "file": "3-cocina.webp",
+      "name": "Cocina",
+      "initialView": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 75,
+        "_id": "6af22396ceb4c55588b56e08"
+      },
+      "coverage": {
+        "minYaw": -104.5,
+        "maxYaw": 104.5,
+        "minPitch": -30.0029296875,
+        "maxPitch": 30.0029296875,
+        "_id": "6af21f493d2f2969bae29e3f"
+      },
+      "hotspots": [
+        {
+          "to": "Living",
+          "pitch": -1.9,
+          "yaw": -88.3,
+          "label": "Living"
+        },
+        {
+          "to": "Patio",
+          "pitch": 10.5,
+          "yaw": 12.9,
+          "label": "Patio"
+        }
+      ]
+    },
+    {
+      "file": "3-patio.webp",
+      "name": "Patio",
+      "initialView": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 75,
+        "_id": "6af22396ceb4c55588b56e0b"
+      },
+      "coverage": {
+        "minYaw": -46,
+        "maxYaw": 46,
+        "minPitch": -30.121594684385382,
+        "maxPitch": 30.121594684385382,
+        "_id": "6af222aa6e3e657eb88e0f35"
+      },
+      "hotspots": [
+        {
+          "to": "Cocina",
+          "pitch": 6.1,
+          "yaw": 30.4,
+          "label": "Cocina"
+        }
+      ]
+    }
+  ]
+}

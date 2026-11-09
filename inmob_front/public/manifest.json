@@ -1,0 +1,29 @@
+{
+  "name": "Inmobiliaria - Propiedades en Venta y Alquiler",
+  "short_name": "Inmobiliaria",
+  "description": "Encuentra la propiedad perfecta para ti. Casas, departamentos, terrenos y locales comerciales.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0F766E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

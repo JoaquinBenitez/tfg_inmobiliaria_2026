@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Environment files (all variants; keep the example tracked)
+.env*
+!.env.example
+
+# Build output
+dist/
+.next/
+out/
+
+# Test coverage
+coverage/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Local image storage uploads
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.bundle
+node_modules.win-trash*/

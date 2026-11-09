@@ -1,0 +1,309 @@
+@import 'leaflet/dist/leaflet.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Tailwind v4 Preflight sets `button { cursor: default }` — restore the
+   expected pointer cursor for interactive buttons (shadcn/ui recommendation) */
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+/* Tailwind 4 theme: maps CSS variables to utility tokens (shadcn/ui pattern) */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  /* Keep brand colors for backward compatibility */
+  --color-primary-light: var(--brand-primary-light);
+  --color-primary-dark: var(--brand-primary-dark);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-light: var(--brand-secondary-light);
+  --color-secondary-dark: var(--brand-secondary-dark);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Status colors */
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-error: hsl(var(--error));
+  --color-info: hsl(var(--info));
+
+  /* Enhanced status tokens */
+  --color-status-available: var(--status-available);
+  --color-status-available-foreground: var(--status-available-foreground);
+  --color-status-reserved: var(--status-reserved);
+  --color-status-reserved-foreground: var(--status-reserved-foreground);
+  --color-status-sold: var(--status-sold);
+  --color-status-sold-foreground: var(--status-sold-foreground);
+
+  /* Loading states */
+  --color-skeleton: var(--skeleton);
+
+  /* Chart colors */
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+/* Custom animations (migrated from tailwind.config.ts) */
+@theme {
+  --animate-slide-in-right: slide-in-right 0.7s ease-in-out forwards;
+  --animate-slide-in-left: slide-in-left 0.7s ease-in-out forwards;
+  --animate-slide-out-left: slide-out-left 0.7s ease-in-out forwards;
+  --animate-slide-out-right: slide-out-right 0.7s ease-in-out forwards;
+  --animate-fade-in: fade-in 0.5s ease-in-out forwards;
+
+  @keyframes slide-in-right {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes slide-in-left {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes slide-out-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes slide-out-right {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+}
+
+@layer base {
+  :root {
+    /* shadcn/ui Base Colors */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* Primary - Mapped to your brand teal */
+    --primary: 173 58% 39%;        /* #0F766E */
+    --primary-foreground: 0 0% 98%;
+
+    /* Secondary - Mapped to your brand purple */
+    --secondary: 262 83% 58%;      /* #9333EA */
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted Colors */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    /* Accent Colors */
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Border and Input */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 173 58% 39%;           /* Matches primary */
+
+    /* Chart Colors */
+    --chart-1: 173 58% 39%;        /* Primary teal */
+    --chart-2: 262 83% 58%;        /* Secondary purple */
+    --chart-3: 197 37% 24%;        /* Darker teal */
+    --chart-4: 280 87% 65%;        /* Lighter purple */
+    --chart-5: 189 43% 73%;        /* Light teal */
+
+    /* Custom Brand Colors (for direct access) */
+    --brand-primary: #0F766E;
+    --brand-primary-light: #14B8A6;
+    --brand-primary-dark: #0E5F58;
+    --brand-secondary: #9333EA;
+    --brand-secondary-light: #A855F7;
+    --brand-secondary-dark: #7E22CE;
+
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --error: 0 84.2% 60.2%;
+    --info: 221 91% 58%;
+
+    /* Enhanced status semantic tokens */
+    --status-available: hsl(var(--success));
+    --status-available-foreground: hsl(var(--success-foreground));
+    --status-reserved: hsl(var(--warning));
+    --status-reserved-foreground: hsl(var(--warning-foreground));
+    --status-sold: hsl(var(--muted));
+    --status-sold-foreground: hsl(var(--muted-foreground));
+
+    /* Enhanced interactive states */
+    --hover-accent: hsl(var(--accent) / 0.5);
+    --selected-accent: hsl(var(--accent));
+
+    /* Loading states */
+    --skeleton: hsl(var(--muted));
+    --skeleton-foreground: hsl(var(--muted-foreground));
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+}
+
+/* Your custom global styles below */
+
+/* Print-friendly styles for property pages */
+@media print {
+  /* Hide unnecessary elements when printing */
+  nav,
+  header,
+  footer,
+  .no-print,
+  button:not(.print-keep),
+  [class*="hover:bg-accent"],
+  [class*="sticky"],
+  [class*="fixed"] {
+    display: none !important;
+  }
+
+  /* Reset page margins for better printing */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  /* Optimize body for printing */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Remove shadows and borders for cleaner print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Optimize images for printing */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Property title */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    color: black !important;
+  }
+
+  /* Property details table */
+  .print-section {
+    page-break-inside: avoid;
+    margin-bottom: 1cm;
+  }
+
+  /* Price highlight */
+  .print-price {
+    font-size: 18pt;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.5cm;
+    margin-bottom: 0.5cm;
+  }
+
+  /* Contact information */
+  .print-contact {
+    border-top: 2px solid #000;
+    padding-top: 0.5cm;
+    margin-top: 1cm;
+    page-break-inside: avoid;
+  }
+
+  /* Status badges - convert to text */
+  [class*="status-badge"] {
+    border: 1px solid #000;
+    padding: 2px 6px;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Image gallery - show first 4 images max */
+  .print-gallery img:nth-child(n+5) {
+    display: none;
+  }
+
+  /* Grid layouts - convert to single column for better printing */
+  .grid {
+    display: block !important;
+  }
+
+  .grid > * {
+    width: 100% !important;
+    margin-bottom: 0.5cm;
+  }
+
+  /* Ensure links show their URL */
+  a[href]:after {
+    content: "" !important; /* Disabled by default - uncomment below to show URLs */
+    /* content: " (" attr(href) ")"; */
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid;
+  }
+
+  /* Share buttons - hide */
+  [class*="share"],
+  [class*="Share"] {
+    display: none !important;
+  }
+
+  /* Comparison and interactive elements */
+  [class*="compare"],
+  [class*="Compare"] {
+    display: none !important;
+  }
+}
